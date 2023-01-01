@@ -95,7 +95,7 @@ static void colorful_effect_task(void *param)
 	            }
 	            // Flush RGB values to LEDs
 	            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
-//	            vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+
 
 	        }
 		vTaskDelay(25 / portTICK_PERIOD_MS);
