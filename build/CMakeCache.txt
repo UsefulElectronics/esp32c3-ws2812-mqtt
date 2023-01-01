@@ -566,7 +566,6 @@ HAVE_TIME_T_SIZE:INTERNAL=TRUE
 TIME_T_SIZE:INTERNAL=8
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/led_strip
-//Path to a program.
 _Python3_EXECUTABLE:INTERNAL=C:/Espressif/python_env/idf5.0_py3.8_env/Scripts/python.exe
 //Python3 Properties
 _Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;8;7;32;;;C:\Espressif\tools\idf-python\3.8.7\Lib;C:\Espressif\tools\idf-python\3.8.7\Lib;C:\Espressif\python_env\idf5.0_py3.8_env\Lib\site-packages;C:\Espressif\python_env\idf5.0_py3.8_env\Lib\site-packages

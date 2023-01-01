@@ -43,7 +43,7 @@
 #define RMT_LED_STRIP_GPIO_NUM      2
 
 #define EXAMPLE_LED_NUMBERS         69
-#define EXAMPLE_CHASE_SPEED_MS      100
+#define EXAMPLE_CHASE_SPEED_MS      2
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 

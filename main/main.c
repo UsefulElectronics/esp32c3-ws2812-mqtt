@@ -36,8 +36,76 @@ static uint8_t led_strip_pixels[EXAMPLE_LED_NUMBERS * 3];
 /* MACROS --------------------------------------------------------------------*/
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
-
+static void colorful_effect_task(void *param);
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
+
+
+static void colorful_effect_task(void *param)
+{
+
+    uint32_t red 			= 0;
+    uint32_t green 			= 0;
+    uint32_t blue 			= 0;
+    static uint16_t hue 	= 0;
+    uint16_t start_rgb 		= 0;
+
+    ESP_LOGI(TAG, "Create RMT TX channel");
+    rmt_channel_handle_t led_chan = NULL;
+    rmt_tx_channel_config_t tx_chan_config =
+    {
+        .clk_src = RMT_CLK_SRC_DEFAULT, // select source clock
+        .gpio_num = RMT_LED_STRIP_GPIO_NUM,
+        .mem_block_symbols = 64, 		// increase the block size can make the LED less flickering
+        .resolution_hz = RMT_LED_STRIP_RESOLUTION_HZ,
+        .trans_queue_depth = 4, 		// set the number of transactions that can be pending in the background
+    };
+    ESP_ERROR_CHECK(rmt_new_tx_channel(&tx_chan_config, &led_chan));
+
+    ESP_LOGI(TAG, "Install led strip encoder");
+    rmt_encoder_handle_t led_encoder = NULL;
+    led_strip_encoder_config_t encoder_config =
+    {
+        .resolution = RMT_LED_STRIP_RESOLUTION_HZ,
+    };
+    ESP_ERROR_CHECK(rmt_new_led_strip_encoder(&encoder_config, &led_encoder));
+
+    ESP_LOGI(TAG, "Enable RMT TX channel");
+    ESP_ERROR_CHECK(rmt_enable(led_chan));
+
+    ESP_LOGI(TAG, "Start LED rainbow chase");
+    rmt_transmit_config_t tx_config =
+    {
+        .loop_count = 0, // no transfer loop
+    };
+
+	    while (1)
+	    {
+	    	hue ++ ;
+	        for (int i = 0; i < 3; i++)
+	        {
+	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
+	            {
+	                // Build RGB pixels
+	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
+
+	                led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
+	                led_strip_pixels[j * 3 + 0] = blue;
+	                led_strip_pixels[j * 3 + 1] = red;
+	                led_strip_pixels[j * 3 + 2] = green;
+	            }
+	            // Flush RGB values to LEDs
+	            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+//	            vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+
+	        }
+		vTaskDelay(25 / portTICK_PERIOD_MS);
+	}
+
+}
+
+
+
+
 /**
  * @brief 	Convert Hue, saturation and brightness values to 8 bit RGB value
  *
@@ -101,56 +169,7 @@ void led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t
 
 void app_main(void)
 {
-    uint32_t red = 0;
-    uint32_t green = 0;
-    uint32_t blue = 0;
-    uint16_t hue = 0;
-    uint16_t start_rgb = 0;
-
-    ESP_LOGI(TAG, "Create RMT TX channel");
-    rmt_channel_handle_t led_chan = NULL;
-    rmt_tx_channel_config_t tx_chan_config = {
-        .clk_src = RMT_CLK_SRC_DEFAULT, // select source clock
-        .gpio_num = RMT_LED_STRIP_GPIO_NUM,
-        .mem_block_symbols = 64, // increase the block size can make the LED less flickering
-        .resolution_hz = RMT_LED_STRIP_RESOLUTION_HZ,
-        .trans_queue_depth = 4, // set the number of transactions that can be pending in the background
-    };
-    ESP_ERROR_CHECK(rmt_new_tx_channel(&tx_chan_config, &led_chan));
-
-    ESP_LOGI(TAG, "Install led strip encoder");
-    rmt_encoder_handle_t led_encoder = NULL;
-    led_strip_encoder_config_t encoder_config = {
-        .resolution = RMT_LED_STRIP_RESOLUTION_HZ,
-    };
-    ESP_ERROR_CHECK(rmt_new_led_strip_encoder(&encoder_config, &led_encoder));
-
-    ESP_LOGI(TAG, "Enable RMT TX channel");
-    ESP_ERROR_CHECK(rmt_enable(led_chan));
-
-    ESP_LOGI(TAG, "Start LED rainbow chase");
-    rmt_transmit_config_t tx_config = {
-        .loop_count = 0, // no transfer loop
-    };
-    while (1) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = i; j < EXAMPLE_LED_NUMBERS; j += 3) {
-                // Build RGB pixels
-                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
-                led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
-                led_strip_pixels[j * 3 + 0] = green;
-                led_strip_pixels[j * 3 + 1] = blue;
-                led_strip_pixels[j * 3 + 2] = red;
-            }
-            // Flush RGB values to LEDs
-            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
-            vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
-            memset(led_strip_pixels, 0, sizeof(led_strip_pixels));
-            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
-            vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
-        }
-        start_rgb += 60;
-    }
+	xTaskCreatePinnedToCore(colorful_effect_task, "colorful led effect", 10000, NULL, 4, NULL, 1);
 }
 
 /**************************  Useful Electronics  ****************END OF FILE***/
