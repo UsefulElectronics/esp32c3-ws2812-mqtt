@@ -57,3 +57,4 @@ C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/mqtt/lib
 C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/spiffs/libspiffs.a
 C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/main/libmain.a
+C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/protocol_examples_common/libprotocol_examples_common.a

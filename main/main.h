@@ -32,6 +32,22 @@
 #include "driver/rmt_tx.h"
 #include "led_strip_encoder.h"
 
+
+#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
+
+
+
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/semphr.h"
+#include "freertos/queue.h"
+
+
+
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/

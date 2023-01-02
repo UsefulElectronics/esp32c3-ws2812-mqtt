@@ -387,3 +387,8 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/main/cmake_install.cmake")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/protocol_examples_common/cmake_install.cmake")
+endif()
+

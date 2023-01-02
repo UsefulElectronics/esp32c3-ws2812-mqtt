@@ -23,7 +23,8 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "mqtt.h"
+#include "wifi_connect.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
@@ -170,6 +171,10 @@ void led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t
 void app_main(void)
 {
 	xTaskCreatePinnedToCore(colorful_effect_task, "colorful led effect", 10000, NULL, 4, NULL, 1);
+
+	wifi_connect();
+
+	mqtt_app_start();
 }
 
 /**************************  Useful Electronics  ****************END OF FILE***/
