@@ -47,8 +47,13 @@ static void colorful_effect_task(void *param)
     uint32_t red 			= 0;
     uint32_t green 			= 0;
     uint32_t blue 			= 0;
-    static uint16_t hue 	= 0;
-    uint16_t start_rgb 		= 0;
+
+    uint32_t hue 			= 0;
+    uint32_t sat 			= 100;
+    uint32_t bright			= 100;
+
+
+    mqtt_buffer_t mqttSubscribeBuffer;
 
     ESP_LOGI(TAG, "Create RMT TX channel");
     rmt_channel_handle_t led_chan = NULL;
@@ -81,25 +86,63 @@ static void colorful_effect_task(void *param)
 
 	    while (1)
 	    {
-	    	hue ++ ;
-	        for (int i = 0; i < 3; i++)
-	        {
-	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
-	            {
-	                // Build RGB pixels
-	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
+	    	if(xQueueReceive(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY))
+	    	{
+	    		 if(0 == memcmp(mqttSubscribeBuffer.topicString, "lampColor", 5))
+	    		 {
+	    			 sscanf(mqttSubscribeBuffer.data, "hsv(%d, %d%%, %d%%)", &hue, &sat, &bright);
 
-	                led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
-	                led_strip_pixels[j * 3 + 0] = blue;
-	                led_strip_pixels[j * 3 + 1] = red;
-	                led_strip_pixels[j * 3 + 2] = green;
-	            }
-	            // Flush RGB values to LEDs
-	            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+	    			 printf("h: %d, s: %d, v: %d\n", hue, sat, bright);
+	    		 }
+	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, "switch", 5))
+				 {
+	    			 if(0 == memcmp(mqttSubscribeBuffer.data, "false", 3))
+	    			 {
+	    				 bright = 0;
+	    			 }
+	    			 else
+	    			 {
+	    				 bright = 100;
+	    			 }
+				 }
 
 
-	        }
-		vTaskDelay(25 / portTICK_PERIOD_MS);
+//	  	    	hue ++ ;
+	  	        for (int i = 0; i < 3; i++)
+	  	        {
+	  	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
+	  	            {
+	  	                // Build RGB pixels
+	  	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
+
+	  	                led_strip_hsv2rgb(hue, sat, bright, &red, &green, &blue);
+	  	                led_strip_pixels[j * 3 + 0] = green;
+	  	                led_strip_pixels[j * 3 + 1] = red;
+	  	                led_strip_pixels[j * 3 + 2] = blue;
+	  	            }
+	  	            // Flush RGB values to LEDs
+	  	            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+
+	  	        }
+	    	}
+//	    	hue ++ ;
+//	        for (int i = 0; i < 3; i++)
+//	        {
+//	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
+//	            {
+//	                // Build RGB pixels
+//	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
+//
+//	                led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
+//	                led_strip_pixels[j * 3 + 0] = blue;
+//	                led_strip_pixels[j * 3 + 1] = red;
+//	                led_strip_pixels[j * 3 + 2] = green;
+//	            }
+//	            // Flush RGB values to LEDs
+//	            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+//
+//	        }
+//		vTaskDelay(25 / portTICK_PERIOD_MS);
 	}
 
 }
@@ -170,11 +213,13 @@ void led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t
 
 void app_main(void)
 {
-	xTaskCreatePinnedToCore(colorful_effect_task, "colorful led effect", 10000, NULL, 4, NULL, 1);
+
 
 	wifi_connect();
 
 	mqtt_app_start();
+
+	xTaskCreatePinnedToCore(colorful_effect_task, "colorful led effect", 10000, NULL, 4, NULL, 1);
 }
 
 /**************************  Useful Electronics  ****************END OF FILE***/

@@ -31,13 +31,19 @@
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
-
+extern QueueHandle_t mqttSubscribe_queue;
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
-
+#define MQTT_MAX_TOPIC_LENGTH	30
+#define MQTT_MAX_DATA_LENGTH	30
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
-
+typedef struct
+{
+	char 		topicString[MQTT_MAX_TOPIC_LENGTH];
+	uint16_t 	msgLength;
+	char		data[MQTT_MAX_DATA_LENGTH];
+}mqtt_buffer_t;
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 void mqtt_app_start(void);
 
