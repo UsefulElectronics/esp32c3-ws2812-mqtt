@@ -37,6 +37,13 @@ extern QueueHandle_t mqttSubscribe_queue;
 /* MACROS --------------------------------------------------------------------*/
 #define MQTT_MAX_TOPIC_LENGTH	30
 #define MQTT_MAX_DATA_LENGTH	30
+
+#define MQTT_COLOR_TOPIC 		"lampColor"
+#define MQTT_MODE_TOPIC 		"lampMode"
+#define MQTT_SWITCH_TOPIC 		"switch"
+#define MQTT_FREQUENCY_TOPIC 	"lampFreq"
+
+
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 typedef struct
 {

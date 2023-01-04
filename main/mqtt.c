@@ -63,13 +63,13 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
 
-        msg = esp_mqtt_client_subscribe(client, "switch", 0);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg);
+        esp_mqtt_client_subscribe(client, MQTT_SWITCH_TOPIC, 0);
 
-        msg = esp_mqtt_client_subscribe(client, "lampColor", 0);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg);
+        esp_mqtt_client_subscribe(client, MQTT_COLOR_TOPIC, 0);
 
+        esp_mqtt_client_subscribe(client, MQTT_MODE_TOPIC, 0);
 
+        esp_mqtt_client_subscribe(client, MQTT_FREQUENCY_TOPIC, 0);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -88,7 +88,9 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_DATA:
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+
         printf("DATA=%.*s\r\n", event->data_len, event->data);
 
 

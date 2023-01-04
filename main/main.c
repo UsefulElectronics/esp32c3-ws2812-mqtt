@@ -32,16 +32,23 @@ static const char *TAG = "example";
 
 static uint8_t led_strip_pixels[EXAMPLE_LED_NUMBERS * 3];
 
+static uint8_t colorMode = COLOR_SELECT;
+
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
-static void colorful_effect_task(void *param);
+static void mqtt_msg_pars_task		(void *param);
+
+static void colorful_effect_task	(void *param);
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
-
-
 static void colorful_effect_task(void *param)
+{
+
+}
+
+static void mqtt_msg_pars_task(void *param)
 {
 
     uint32_t red 			= 0;
@@ -88,15 +95,17 @@ static void colorful_effect_task(void *param)
 	    {
 	    	if(xQueueReceive(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY))
 	    	{
-	    		 if(0 == memcmp(mqttSubscribeBuffer.topicString, "lampColor", 5))
+	    		 if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_COLOR_TOPIC, 5))
 	    		 {
 	    			 sscanf(mqttSubscribeBuffer.data, "hsv(%d, %d%%, %d%%)", &hue, &sat, &bright);
 
 	    			 printf("h: %d, s: %d, v: %d\n", hue, sat, bright);
+
+	    			 colorMode = COLOR_SELECT;
 	    		 }
-	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, "switch", 5))
+	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_SWITCH_TOPIC, 5))
 				 {
-	    			 if(0 == memcmp(mqttSubscribeBuffer.data, "false", 3))
+	    			 if(0 == memcmp(mqttSubscribeBuffer.data, FALSE, 3))
 	    			 {
 	    				 bright = 0;
 	    			 }
@@ -104,6 +113,24 @@ static void colorful_effect_task(void *param)
 	    			 {
 	    				 bright = 100;
 	    			 }
+
+	    			 colorMode = COLOR_SELECT;
+				 }
+	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_MODE_TOPIC, 5))
+				 {
+
+	    			 if(0 == memcmp(mqttSubscribeBuffer.data, HUE_PLAY, 3))
+	    			 {
+	    				 colorMode = COLOR_HUE_PLAY;
+	    			 }
+	    			 else if (0 == memcmp(mqttSubscribeBuffer.data, SAT_PLAY, 3))
+	    			 {
+	    				 colorMode = COLOR_SAT_PLAY;
+	    			 }
+				 }
+	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_FREQUENCY_TOPIC, 5))
+				 {
+
 				 }
 
 
@@ -125,24 +152,7 @@ static void colorful_effect_task(void *param)
 
 	  	        }
 	    	}
-//	    	hue ++ ;
-//	        for (int i = 0; i < 3; i++)
-//	        {
-//	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
-//	            {
-//	                // Build RGB pixels
-//	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
-//
-//	                led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
-//	                led_strip_pixels[j * 3 + 0] = blue;
-//	                led_strip_pixels[j * 3 + 1] = red;
-//	                led_strip_pixels[j * 3 + 2] = green;
-//	            }
-//	            // Flush RGB values to LEDs
-//	            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
-//
-//	        }
-//		vTaskDelay(25 / portTICK_PERIOD_MS);
+
 	}
 
 }
@@ -218,6 +228,8 @@ void app_main(void)
 	wifi_connect();
 
 	mqtt_app_start();
+
+	xTaskCreatePinnedToCore(mqtt_msg_pars_task, "pars MQTT Message", 10000, NULL, 4, NULL, 1);
 
 	xTaskCreatePinnedToCore(colorful_effect_task, "colorful led effect", 10000, NULL, 4, NULL, 1);
 }

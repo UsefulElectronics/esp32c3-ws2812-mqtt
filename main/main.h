@@ -50,16 +50,30 @@
 
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
-/* VARIABLES -----------------------------------------------------------------*/
-
-/* DEFINITIONS ---------------------------------------------------------------*/
-
 /* MACROS --------------------------------------------------------------------*/
 #define RMT_LED_STRIP_RESOLUTION_HZ 10000000 // 10MHz resolution, 1 tick = 0.1us (led strip needs a high resolution)
 #define RMT_LED_STRIP_GPIO_NUM      2
 
 #define EXAMPLE_LED_NUMBERS         69
 #define EXAMPLE_CHASE_SPEED_MS      2
+
+#define TRUE 		"true"
+#define FALSE		"false"
+
+#define HUE_PLAY	"hueRotate"
+#define SAT_PLAY	"satRotate"
+
+/* VARIABLES -----------------------------------------------------------------*/
+
+/* DEFINITIONS ---------------------------------------------------------------*/
+
+/* ENUM ----------------------------------------------------------------------*/
+enum
+{
+	COLOR_SELECT	= 0,
+	COLOR_HUE_PLAY,
+	COLOR_SAT_PLAY,
+};
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 
