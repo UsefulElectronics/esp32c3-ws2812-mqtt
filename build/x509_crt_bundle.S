@@ -1,4 +1,4 @@
-/* * Data converted from C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

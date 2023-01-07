@@ -1,6 +1,6 @@
 /* Automatically generated file; DO NOT EDIT */
 /* Espressif IoT Development Framework Linker Script */
-/* Generated from: C:\Espressif\frameworks\esp-idf-v5.0\components\esp_system\ld\esp32c3\sections.ld.in */
+/* Generated from: C:\Espressif\frameworks\esp-idf-v5.0-2\components\esp_system\ld\esp32c3\sections.ld.in */
 
 /*
  * SPDX-FileCopyrightText: 2021 Espressif Systems (Shanghai) CO LTD

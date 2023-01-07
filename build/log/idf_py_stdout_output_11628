@@ -1,0 +1,70 @@
+[1/5] cmd.exe /C "cd /D C:\Espressif\frameworks\esp-idf-v5.0-2\work_space\esp32c3-ws2812-mqtt\build\esp-idf\esptool_py && python C:/Espressif/frameworks/esp-idf-v5.0-2/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/partition_table/partition-table.bin C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/led_strip.bin"
+led_strip.bin binary size 0xde200 bytes. Smallest app partition is 0x100000 bytes. 0x21e00 bytes (13%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cmd.exe /C "cd /D C:\Espressif\frameworks\esp-idf-v5.0-2\work_space\esp32c3-ws2812-mqtt\build\bootloader\esp-idf\esptool_py && python C:/Espressif/frameworks/esp-idf-v5.0-2/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/bootloader/bootloader.bin"
+Bootloader binary size 0x4b60 bytes. 0x34a0 bytes (41%) free.
+[2/3] cmd.exe /C "cd /D C:\Espressif\frameworks\esp-idf-v5.0-2\components\esptool_py && C:\Espressif\tools\cmake\3.24.0\bin\cmake.exe -D IDF_PATH=C:/Espressif/frameworks/esp-idf-v5.0-2 -D SERIAL_TOOL=python;;C:/Espressif/frameworks/esp-idf-v5.0-2/components/esptool_py/esptool/esptool.py;--chip;esp32c3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build -P C:/Espressif/frameworks/esp-idf-v5.0-2/components/esptool_py/run_serial_tool.cmake"
+esptool esp32c3 -p COM3 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 2MB 0x0 bootloader/bootloader.bin 0x10000 led_strip.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.4
+Serial port COM3
+Connecting............
+Chip is ESP32-C3 (revision v0.3)
+Features: WiFi, BLE
+Crystal is 40MHz
+MAC: 60:55:f9:73:e6:bc
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00000000 to 0x00004fff...
+Flash will be erased from 0x00010000 to 0x000eefff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Compressed 19296 bytes to 11824...
+Writing at 0x00000000... (100 %)
+Wrote 19296 bytes (11824 compressed) at 0x00000000 in 0.7 seconds (effective 219.8 kbit/s)...
+Hash of data verified.
+Compressed 909824 bytes to 525506...
+Writing at 0x00010000... (3 %)
+Writing at 0x0001caf5... (6 %)
+Writing at 0x00022b6d... (9 %)
+Writing at 0x00028b71... (12 %)
+Writing at 0x0003431e... (15 %)
+Writing at 0x0003b96b... (18 %)
+Writing at 0x00041e21... (21 %)
+Writing at 0x0004904d... (24 %)
+Writing at 0x000508c7... (27 %)
+Writing at 0x000577ba... (30 %)
+Writing at 0x0005ea2a... (33 %)
+Writing at 0x00064d21... (36 %)
+Writing at 0x0006b3aa... (39 %)
+Writing at 0x00071db3... (42 %)
+Writing at 0x000782fb... (45 %)
+Writing at 0x0007e973... (48 %)
+Writing at 0x00084588... (51 %)
+Writing at 0x0008a75a... (54 %)
+Writing at 0x00090988... (57 %)
+Writing at 0x00096e98... (60 %)
+Writing at 0x0009cffa... (63 %)
+Writing at 0x000a3b4b... (66 %)
+Writing at 0x000aa676... (69 %)
+Writing at 0x000b19cf... (72 %)
+Writing at 0x000b897a... (75 %)
+Writing at 0x000bf6f1... (78 %)
+Writing at 0x000c562d... (81 %)
+Writing at 0x000cbdff... (84 %)
+Writing at 0x000d1d3e... (87 %)
+Writing at 0x000d8a22... (90 %)
+Writing at 0x000e0286... (93 %)
+Writing at 0x000e6d9a... (96 %)
+Writing at 0x000ed86c... (100 %)
+Wrote 909824 bytes (525506 compressed) at 0x00010000 in 14.5 seconds (effective 503.1 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.1 seconds (effective 219.4 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

@@ -1285,7 +1285,7 @@ rule C_STATIC_LIBRARY_LINKER____idf_protocol_examples_common_
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\Espressif\tools\cmake\3.24.0\bin\cmake.exe --regenerate-during-build -SC:\Espressif\frameworks\esp-idf-v5.0\work_space\led_strip -BC:\Espressif\frameworks\esp-idf-v5.0\work_space\led_strip\build
+  command = C:\Espressif\tools\cmake\3.24.0\bin\cmake.exe --regenerate-during-build -SC:\Espressif\frameworks\esp-idf-v5.0-2\work_space\esp32c3-ws2812-mqtt -BC:\Espressif\frameworks\esp-idf-v5.0-2\work_space\esp32c3-ws2812-mqtt\build
   description = Re-running CMake...
   generator = 1
 

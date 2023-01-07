@@ -1,4 +1,4 @@
-# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0/components/esp-tls
+# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0-2/components/esp-tls
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

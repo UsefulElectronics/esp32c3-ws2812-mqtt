@@ -1,4 +1,4 @@
-# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0/components/spiffs
+# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0-2/components/spiffs
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

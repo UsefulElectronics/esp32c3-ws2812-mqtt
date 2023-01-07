@@ -1,4 +1,4 @@
-# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/main
+# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

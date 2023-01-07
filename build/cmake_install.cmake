@@ -1,4 +1,4 @@
-# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip
+# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/cmake_install.cmake")
+  include("C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/esp-idf/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

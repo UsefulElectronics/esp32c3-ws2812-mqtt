@@ -26,14 +26,32 @@
 #include "mqtt.h"
 #include "wifi_connect.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
+typedef struct
+{
+    uint32_t hue;
+    uint32_t sat;
+    uint32_t bright;
 
+    uint32_t period;
+
+    uint8_t colorMode;
+}ws2811_handler_t;
+
+typedef struct
+{
+	rmt_channel_handle_t 	channel;
+	rmt_encoder_handle_t 	encoder;
+    rmt_transmit_config_t 	transmitter;
+
+}rmt_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
-static const char *TAG = "example";
+static const char *TAG = "main";
 
 static uint8_t led_strip_pixels[EXAMPLE_LED_NUMBERS * 3];
 
-static uint8_t colorMode = COLOR_SELECT;
 
+static ws2811_handler_t hWs2811 = {0};
+static rmt_handler_t	hRmt = {0};
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -45,19 +63,85 @@ static void colorful_effect_task	(void *param);
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 static void colorful_effect_task(void *param)
 {
+    uint32_t red 			= 0;
+    uint32_t green 			= 0;
+    uint32_t blue 			= 0;
 
+    uint8_t satDirection 	= 1;
+
+	hWs2811.period = 10;
+    while (1)
+    {
+    	switch (hWs2811.colorMode)
+    	{
+			case COLOR_SELECT:
+
+				break;
+			case COLOR_SAT_PLAY:
+				if(1 == satDirection)
+				{
+					++hWs2811.sat;
+				}
+				if(0 == satDirection)
+				{
+					--hWs2811.sat;
+				}
+
+				if(100 == hWs2811.sat)
+				{
+					satDirection = 0;
+
+				}
+				if(0 == hWs2811.sat)
+				{
+					satDirection = 1;
+
+				}
+
+				ESP_LOGD(TAG, "sat %d", hWs2811.sat);
+
+				break;
+			case COLOR_HUE_PLAY:
+				hWs2811.sat = 100;
+				++hWs2811.hue;
+				if(360 == hWs2811.hue)
+				{
+					hWs2811.hue = 0;
+				}
+				break;
+			default:
+				break;
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
+			{
+				// Build RGB pixels
+				led_strip_hsv2rgb(hWs2811.hue, hWs2811.sat, hWs2811.bright, &red, &green, &blue);
+				led_strip_pixels[j * 3 + 0] = green;
+				led_strip_pixels[j * 3 + 1] = red;
+				led_strip_pixels[j * 3 + 2] = blue;
+			}
+			// Flush RGB values to LEDs
+			ESP_ERROR_CHECK(rmt_transmit(hRmt.channel, hRmt.encoder, led_strip_pixels, sizeof(led_strip_pixels), &hRmt.transmitter));
+
+		}
+
+    	vTaskDelay(hWs2811.period/portTICK_PERIOD_MS);
+    }
 }
 
 static void mqtt_msg_pars_task(void *param)
 {
 
-    uint32_t red 			= 0;
-    uint32_t green 			= 0;
-    uint32_t blue 			= 0;
+//    uint32_t red 			= 0;
+//    uint32_t green 			= 0;
+//    uint32_t blue 			= 0;
 
-    uint32_t hue 			= 0;
-    uint32_t sat 			= 100;
-    uint32_t bright			= 100;
+//    uint32_t hue 			= 0;
+//    uint32_t sat 			= 100;
+//    uint32_t bright			= 100;
 
 
     mqtt_buffer_t mqttSubscribeBuffer;
@@ -91,66 +175,74 @@ static void mqtt_msg_pars_task(void *param)
         .loop_count = 0, // no transfer loop
     };
 
+    //Copy RMT parameter to the global handler
+    memcpy(&hRmt.channel, 		&led_chan,		sizeof(rmt_channel_handle_t));
+    memcpy(&hRmt.encoder, 		&led_encoder,	sizeof(rmt_encoder_handle_t));
+    memcpy(&hRmt.transmitter, 	&tx_config,		sizeof(rmt_transmit_config_t));
+
 	    while (1)
 	    {
 	    	if(xQueueReceive(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY))
 	    	{
 	    		 if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_COLOR_TOPIC, 5))
 	    		 {
-	    			 sscanf(mqttSubscribeBuffer.data, "hsv(%d, %d%%, %d%%)", &hue, &sat, &bright);
+	    			 sscanf(mqttSubscribeBuffer.data, "hsv(%d, %d%%, %d%%)", & hWs2811.hue, &hWs2811.sat, &hWs2811.bright);
 
-	    			 printf("h: %d, s: %d, v: %d\n", hue, sat, bright);
+	    			 printf("h: %d, s: %d, v: %d\n", hWs2811.hue, hWs2811.sat, hWs2811.bright);
 
-	    			 colorMode = COLOR_SELECT;
+	    			 hWs2811.colorMode = COLOR_SELECT;
 	    		 }
 	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_SWITCH_TOPIC, 5))
 				 {
 	    			 if(0 == memcmp(mqttSubscribeBuffer.data, FALSE, 3))
 	    			 {
-	    				 bright = 0;
+	    				 hWs2811.bright = 0;
+//	    				 bright = 0;
 	    			 }
 	    			 else
 	    			 {
-	    				 bright = 100;
+	    				 hWs2811.bright = 100;
+//	    				 bright = 100;
 	    			 }
 
-	    			 colorMode = COLOR_SELECT;
+	    			 hWs2811.colorMode = COLOR_SELECT;
 				 }
 	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_MODE_TOPIC, 5))
 				 {
 
 	    			 if(0 == memcmp(mqttSubscribeBuffer.data, HUE_PLAY, 3))
 	    			 {
-	    				 colorMode = COLOR_HUE_PLAY;
+	    				 hWs2811.colorMode = COLOR_HUE_PLAY;
 	    			 }
 	    			 else if (0 == memcmp(mqttSubscribeBuffer.data, SAT_PLAY, 3))
 	    			 {
-	    				 colorMode = COLOR_SAT_PLAY;
+	    				 hWs2811.colorMode = COLOR_SAT_PLAY;
 	    			 }
 				 }
 	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_FREQUENCY_TOPIC, 5))
 				 {
 
+	    			 printf("speed %s", mqttSubscribeBuffer.data);
+	    			 sscanf(mqttSubscribeBuffer.data, "%d", & hWs2811.period);
+
 				 }
-
-
 //	  	    	hue ++ ;
-	  	        for (int i = 0; i < 3; i++)
-	  	        {
-	  	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
-	  	            {
-	  	                // Build RGB pixels
-	  	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
-
-	  	                led_strip_hsv2rgb(hue, sat, bright, &red, &green, &blue);
-	  	                led_strip_pixels[j * 3 + 0] = green;
-	  	                led_strip_pixels[j * 3 + 1] = red;
-	  	                led_strip_pixels[j * 3 + 2] = blue;
-	  	            }
-	  	            // Flush RGB values to LEDs
-	  	            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
-
-	  	        }
+//	  	        for (int i = 0; i < 3; i++)
+//	  	        {
+//	  	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
+//	  	            {
+//	  	                // Build RGB pixels
+//	  	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
+//
+//	  	                led_strip_hsv2rgb(hue, sat, bright, &red, &green, &blue);
+//	  	                led_strip_pixels[j * 3 + 0] = green;
+//	  	                led_strip_pixels[j * 3 + 1] = red;
+//	  	                led_strip_pixels[j * 3 + 2] = blue;
+//	  	            }
+//	  	            // Flush RGB values to LEDs
+//	  	            ESP_ERROR_CHECK(rmt_transmit(hRmt.channel, hRmt.encoder, led_strip_pixels, sizeof(led_strip_pixels), &hRmt.transmitter));
+//
+//	  	        }
 	    	}
 
 	}

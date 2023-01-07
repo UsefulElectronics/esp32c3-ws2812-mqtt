@@ -1,4 +1,4 @@
-# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0/components/soc
+# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0-2/components/soc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,6 +39,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Espressif/frameworks/esp-idf-v5.0/work_space/led_strip/build/esp-idf/soc/esp32c3/cmake_install.cmake")
+  include("C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/esp-idf/soc/esp32c3/cmake_install.cmake")
 endif()
 

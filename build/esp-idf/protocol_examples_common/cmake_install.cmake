@@ -1,4 +1,4 @@
-# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0/examples/common_components/protocol_examples_common
+# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.0-2/examples/common_components/protocol_examples_common
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
