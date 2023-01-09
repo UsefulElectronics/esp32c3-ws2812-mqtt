@@ -52,6 +52,10 @@ typedef struct
 	char		data[MQTT_MAX_DATA_LENGTH];
 }mqtt_buffer_t;
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
+/**
+ * @brief Start MQTT broker connection and register MQTT related events callback
+ *
+ */
 void mqtt_app_start(void);
 
 #endif /* MAIN_MQTT_H_ */

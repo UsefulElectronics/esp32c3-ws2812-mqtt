@@ -135,15 +135,6 @@ static void colorful_effect_task(void *param)
 static void mqtt_msg_pars_task(void *param)
 {
 
-//    uint32_t red 			= 0;
-//    uint32_t green 			= 0;
-//    uint32_t blue 			= 0;
-
-//    uint32_t hue 			= 0;
-//    uint32_t sat 			= 100;
-//    uint32_t bright			= 100;
-
-
     mqtt_buffer_t mqttSubscribeBuffer;
 
     ESP_LOGI(TAG, "Create RMT TX channel");
@@ -197,12 +188,10 @@ static void mqtt_msg_pars_task(void *param)
 	    			 if(0 == memcmp(mqttSubscribeBuffer.data, FALSE, 3))
 	    			 {
 	    				 hWs2811.bright = 0;
-//	    				 bright = 0;
 	    			 }
 	    			 else
 	    			 {
 	    				 hWs2811.bright = 100;
-//	    				 bright = 100;
 	    			 }
 
 	    			 hWs2811.colorMode = COLOR_SELECT;
@@ -226,30 +215,11 @@ static void mqtt_msg_pars_task(void *param)
 	    			 sscanf(mqttSubscribeBuffer.data, "%d", & hWs2811.period);
 
 				 }
-//	  	    	hue ++ ;
-//	  	        for (int i = 0; i < 3; i++)
-//	  	        {
-//	  	            for (int j = i; j < EXAMPLE_LED_NUMBERS ; j += 3)
-//	  	            {
-//	  	                // Build RGB pixels
-//	  	//                hue = j * 360 / EXAMPLE_LED_NUMBERS + start_rgb;
-//
-//	  	                led_strip_hsv2rgb(hue, sat, bright, &red, &green, &blue);
-//	  	                led_strip_pixels[j * 3 + 0] = green;
-//	  	                led_strip_pixels[j * 3 + 1] = red;
-//	  	                led_strip_pixels[j * 3 + 2] = blue;
-//	  	            }
-//	  	            // Flush RGB values to LEDs
-//	  	            ESP_ERROR_CHECK(rmt_transmit(hRmt.channel, hRmt.encoder, led_strip_pixels, sizeof(led_strip_pixels), &hRmt.transmitter));
-//
-//	  	        }
 	    	}
 
 	}
 
 }
-
-
 
 
 /**
