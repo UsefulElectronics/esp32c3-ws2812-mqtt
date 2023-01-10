@@ -98,8 +98,6 @@ static void colorful_effect_task(void *param)
 
 				}
 
-				ESP_LOGD(TAG, "sat %d", hWs2811.sat);
-
 				break;
 			case COLOR_HUE_PLAY:
 				hWs2811.sat = 100;
@@ -220,7 +218,6 @@ static void mqtt_msg_pars_task(void *param)
 	}
 
 }
-
 
 /**
  * @brief 	Convert Hue, saturation and brightness values to 8 bit RGB value
