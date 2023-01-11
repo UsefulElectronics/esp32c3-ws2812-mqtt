@@ -60,6 +60,9 @@ static rmt_handler_t	hRmt = {0};
 static void mqtt_msg_pars_task		(void *param);
 
 static void colorful_effect_task	(void *param);
+
+static void rmt_config				(void);
+
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 static void colorful_effect_task(void *param)
 {
@@ -123,9 +126,7 @@ static void colorful_effect_task(void *param)
 			}
 			// Flush RGB values to LEDs
 			ESP_ERROR_CHECK(rmt_transmit(hRmt.channel, hRmt.encoder, led_strip_pixels, sizeof(led_strip_pixels), &hRmt.transmitter));
-
 		}
-
     	vTaskDelay(hWs2811.period/portTICK_PERIOD_MS);
     }
 }
@@ -135,6 +136,58 @@ static void mqtt_msg_pars_task(void *param)
 
     mqtt_buffer_t mqttSubscribeBuffer;
 
+	while (1)
+	{
+		if(xQueueReceive(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY))
+		{
+			 if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_COLOR_TOPIC, 5))
+			 {
+				 sscanf(mqttSubscribeBuffer.data, "hsv(%d, %d%%, %d%%)", & hWs2811.hue, &hWs2811.sat, &hWs2811.bright);
+
+				 printf("h: %d, s: %d, v: %d\n", hWs2811.hue, hWs2811.sat, hWs2811.bright);
+
+				 hWs2811.colorMode = COLOR_SELECT;
+			 }
+			 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_SWITCH_TOPIC, 5))
+			 {
+				 if(0 == memcmp(mqttSubscribeBuffer.data, FALSE, 3))
+				 {
+					 hWs2811.bright = 0;
+				 }
+				 else
+				 {
+					 hWs2811.bright = 100;
+				 }
+
+				 hWs2811.colorMode = COLOR_SELECT;
+			 }
+			 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_MODE_TOPIC, 5))
+			 {
+
+				 if(0 == memcmp(mqttSubscribeBuffer.data, HUE_PLAY, 3))
+				 {
+					 hWs2811.colorMode = COLOR_HUE_PLAY;
+				 }
+				 else if (0 == memcmp(mqttSubscribeBuffer.data, SAT_PLAY, 3))
+				 {
+					 hWs2811.colorMode = COLOR_SAT_PLAY;
+				 }
+			 }
+			 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_FREQUENCY_TOPIC, 5))
+			 {
+
+				 printf("speed %s", mqttSubscribeBuffer.data);
+				 sscanf(mqttSubscribeBuffer.data, "%d", & hWs2811.period);
+
+			 }
+		}
+
+	}
+
+}
+
+static void rmt_config(void)
+{
     ESP_LOGI(TAG, "Create RMT TX channel");
     rmt_channel_handle_t led_chan = NULL;
     rmt_tx_channel_config_t tx_chan_config =
@@ -164,58 +217,10 @@ static void mqtt_msg_pars_task(void *param)
         .loop_count = 0, // no transfer loop
     };
 
-    //Copy RMT parameter to the global handler
+    //Copy RMT parameter to the global handler to manage them from a different task
     memcpy(&hRmt.channel, 		&led_chan,		sizeof(rmt_channel_handle_t));
     memcpy(&hRmt.encoder, 		&led_encoder,	sizeof(rmt_encoder_handle_t));
     memcpy(&hRmt.transmitter, 	&tx_config,		sizeof(rmt_transmit_config_t));
-
-	    while (1)
-	    {
-	    	if(xQueueReceive(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY))
-	    	{
-	    		 if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_COLOR_TOPIC, 5))
-	    		 {
-	    			 sscanf(mqttSubscribeBuffer.data, "hsv(%d, %d%%, %d%%)", & hWs2811.hue, &hWs2811.sat, &hWs2811.bright);
-
-	    			 printf("h: %d, s: %d, v: %d\n", hWs2811.hue, hWs2811.sat, hWs2811.bright);
-
-	    			 hWs2811.colorMode = COLOR_SELECT;
-	    		 }
-	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_SWITCH_TOPIC, 5))
-				 {
-	    			 if(0 == memcmp(mqttSubscribeBuffer.data, FALSE, 3))
-	    			 {
-	    				 hWs2811.bright = 0;
-	    			 }
-	    			 else
-	    			 {
-	    				 hWs2811.bright = 100;
-	    			 }
-
-	    			 hWs2811.colorMode = COLOR_SELECT;
-				 }
-	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_MODE_TOPIC, 5))
-				 {
-
-	    			 if(0 == memcmp(mqttSubscribeBuffer.data, HUE_PLAY, 3))
-	    			 {
-	    				 hWs2811.colorMode = COLOR_HUE_PLAY;
-	    			 }
-	    			 else if (0 == memcmp(mqttSubscribeBuffer.data, SAT_PLAY, 3))
-	    			 {
-	    				 hWs2811.colorMode = COLOR_SAT_PLAY;
-	    			 }
-				 }
-	    		 else if(0 == memcmp(mqttSubscribeBuffer.topicString, MQTT_FREQUENCY_TOPIC, 5))
-				 {
-
-	    			 printf("speed %s", mqttSubscribeBuffer.data);
-	    			 sscanf(mqttSubscribeBuffer.data, "%d", & hWs2811.period);
-
-				 }
-	    	}
-
-	}
 
 }
 
@@ -287,6 +292,8 @@ void app_main(void)
 	wifi_connect();
 
 	mqtt_app_start();
+
+	rmt_config();
 
 	xTaskCreatePinnedToCore(mqtt_msg_pars_task, "pars MQTT Message", 10000, NULL, 4, NULL, 1);
 
