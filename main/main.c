@@ -185,7 +185,11 @@ static void mqtt_msg_pars_task(void *param)
 	}
 
 }
-
+/**
+ * @brief 	This function is responsible for initializing RMT peripheral to encode WS8212
+ * 			LED strip data packets and copy the peripheral parameters to rmt_handler_t hRmt
+ *
+ */
 static void rmt_config(void)
 {
     ESP_LOGI(TAG, "Create RMT TX channel");
@@ -287,8 +291,6 @@ void led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t
 
 void app_main(void)
 {
-
-
 	wifi_connect();
 
 	mqtt_app_start();
