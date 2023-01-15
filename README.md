@@ -1,3 +1,23 @@
+[![Build Status](https://img.shields.io/badge/USEFUL%20ELECTRONICS-YOUTUBE-red)](https://www.youtube.com/user/wardzx1)
+
+# Sponsors
+
+### PCBWay
+Tutorial Series Sponsor PCBWay Website. You can get extra free coupons using the link below:
+
+[<img src="https://github.com/UsefulElectronics/esp32s3_la66_lorawan/blob/main/repo%20cover/banner320x100.gif">](https://www.pcbway.com/setinvite.aspx?inviteid=582640)
+
+***
+
+# ESP32C3 WS8212 LED Control Over Node Red MQTT Broker
+***
+### [Tutorial Link](https://youtu.be/KY1ElV0qZDM) On [![Build Status](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/wardzx1) 
+
+In this tutorial, a wirelessly controlled IoT lamp is built from scratch using ESP32-C3 MCU that is driving WS8212 addressable LED strip over RMT peripheral. The MCU is connected over MQTT to a broker that is running on a Raspberry pi. This will make exchanging command wirlessly with a smartphone connected to the same network possible.
+
+The browser based user interface side is handled by Node-Red dashboard, which is a very handy tool for IoT based applications.
+![Circuit Diagram](https://github.com/UsefulElectronics/esp32c3-tzigbee-dwin-weather-station/blob/main/repo%20cover/video%20cover.png)
+***
 | Supported Targets | ESP32 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
 | ----------------- | ----- | -------- | -------- | -------- |
 # RMT Transmit Example -- LED Strip

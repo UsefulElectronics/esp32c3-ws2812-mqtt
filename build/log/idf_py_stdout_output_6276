@@ -1,0 +1,15 @@
+[1/9] Performing build step for 'bootloader'
+[1/1] cmd.exe /C "cd /D C:\Espressif\frameworks\esp-idf-v5.0-2\work_space\esp32c3-ws2812-mqtt\build\bootloader\esp-idf\esptool_py && C:\Espressif\python_env\idf5.0_py3.8_env\Scripts\python.exe C:/Espressif/frameworks/esp-idf-v5.0-2/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/bootloader/bootloader.bin"
+Bootloader binary size 0x4b60 bytes. 0x34a0 bytes (41%) free.
+[2/7] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+[3/7] Linking C static library esp-idf\main\libmain.a
+[4/7] Generating ld/sections.ld
+[5/7] Linking CXX executable led_strip.elf
+[6/7] Generating binary image from built executable
+esptool.py v4.4
+Creating esp32c3 image...
+Merged 2 ELF sections
+Successfully created esp32c3 image.
+Generated C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/led_strip.bin
+[7/7] cmd.exe /C "cd /D C:\Espressif\frameworks\esp-idf-v5.0-2\work_space\esp32c3-ws2812-mqtt\build\esp-idf\esptool_py && C:\Espressif\python_env\idf5.0_py3.8_env\Scripts\python.exe C:/Espressif/frameworks/esp-idf-v5.0-2/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/partition_table/partition-table.bin C:/Espressif/frameworks/esp-idf-v5.0-2/work_space/esp32c3-ws2812-mqtt/build/led_strip.bin"
+led_strip.bin binary size 0xde220 bytes. Smallest app partition is 0x100000 bytes. 0x21de0 bytes (13%) free.

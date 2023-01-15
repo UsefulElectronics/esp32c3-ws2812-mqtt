@@ -135,6 +135,8 @@ static void mqtt_msg_pars_task(void *param)
 {
 
     mqtt_buffer_t mqttSubscribeBuffer;
+    //Let the lamp turned open once it is powered up
+    hWs2811.bright = 100;
 
 	while (1)
 	{
