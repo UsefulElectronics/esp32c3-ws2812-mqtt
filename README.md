@@ -16,7 +16,7 @@ Tutorial Series Sponsor PCBWay Website. You can get extra free coupons using the
 In this tutorial, a wirelessly controlled IoT lamp is built from scratch using ESP32-C3 MCU that is driving WS8212 addressable LED strip over RMT peripheral. The MCU is connected over MQTT to a broker that is running on a Raspberry pi. This will make exchanging command wirlessly with a smartphone connected to the same network possible.
 
 The browser based user interface side is handled by Node-Red dashboard, which is a very handy tool for IoT based applications.
-![Circuit Diagram](https://github.com/UsefulElectronics/esp32c3-tzigbee-dwin-weather-station/blob/main/repo%20cover/video%20cover.png)
+![Circuit Diagram](https://github.com/UsefulElectronics/esp32c3-ws2812-mqtt/blob/main/circuitDiagram/cover.png)
 ***
 | Supported Targets | ESP32 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
 | ----------------- | ----- | -------- | -------- | -------- |
